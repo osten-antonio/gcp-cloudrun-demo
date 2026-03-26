@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{{ app_name }} - GDG Sample</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <h1>{{ app_name }}</h1>
+        <p class="muted">A tiny in-memory To-Do demo to show Cloud Run deployment. Deleting items requires the admin secret.</p>
+        {% if error == 'forbidden' %}
+          <div style="background:#ffe9e9;border:1px solid #ffb4b4;padding:.6rem;border-radius:8px;margin:0.75rem 0;color:#7a0b0b">Incorrect admin secret — deletion failed.</div>
+        {% endif %}
+
+        <form action="/add" method="post" aria-label="Add task">
+          <input aria-label="Task title" type="text" name="title" placeholder="Describe a task (e.g., 'Write deploy guide')" required>
+          <button type="submit">Add</button>
+        </form>
+
+        <h3 style="margin-top:1rem">Tasks</h3>
+        {% if todos %}
+          <ul>
+            {% for t in todos %}
+              <li>
+                <div>
+                  <div><strong>{{ t.title }}</strong></div>
+                  <div class="meta">{{ t.created }}</div>
+                </div>
+                <div class="small-form">
+                  <form action="/delete/{{ t.id }}" method="post">
+                    <input name="secret" placeholder="admin secret" required>
+                    <button type="submit">Delete</button>
+                  </form>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">No tasks yet — add one above.</p>
+        {% endif %}
+
+        <p class="muted" style="margin-top:1rem">Endpoints: <a href="/time">/time</a> • <a href="/health">/health</a></p>
+      </div>
+    </div>
+  </body>
+</html>
